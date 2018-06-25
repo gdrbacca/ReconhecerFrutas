@@ -16,6 +16,8 @@ def find_biggest_contour(image):
 
 	_ , contours , hierarchy=cv2.findContours(image,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 	contour_sizes=[(cv2.contourArea(contour),contour) for contour in contours]
+	if(len(contour_sizes) <= 0):
+		return [], []
 	biggest_contour=max(contour_sizes,key=lambda x:x[0])[1]
 	mask=np.zeros(image.shape,np.uint8)
 	cv2.drawContours(mask,[biggest_contour],-1,255,-1)
@@ -32,13 +34,13 @@ def overlay_mask(mask,image):
 
 def circle_contour(image,contour):
 
-	image_with_ellipse=image.copy()
+	imagem_com_elipse=image.copy()
 
 	ellipse=cv2.fitEllipse(contour)
 
-	cv2.ellipse(image_with_ellipse,ellipse,green,2,1)
+	cv2.ellipse(imagem_com_elipse,ellipse,green,2,1)
 
-	return image_with_ellipse
+	return imagem_com_elipse
 
 
 def show(image):
@@ -50,7 +52,7 @@ def show(image):
 
 def draw_apple(image):
 
-	#PRE PROCESSING OF IMAGE
+	#PRE PROCESSAMENTO
 
 	image=cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
 
@@ -126,6 +128,10 @@ def draw_banana(image):
 	mask_closed=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernel)
 	mask_cleaned=cv2.morphologyEx(mask_closed,cv2.MORPH_OPEN,kernel)
 	big_contour,mask_fruit=find_biggest_contour(mask_cleaned)
+
+	if(len(big_contour) <= 0):
+		return []
+
 	cv2.imshow("das", mask_fruit)
 	overlay=overlay_mask(mask_cleaned,image)
 
@@ -199,13 +205,23 @@ strawberry=cv2.imread('strawberry.jpg')
 fruit=cv2.imread('fruit.jpg')
 #process image
 result_apple=draw_apple(apple)
-result_banana=draw_banana(banana)
+#result_banana=draw_banana(apple)
 result_strawberry=draw_strawberry(strawberry)
 #result_fruit=draw_banana(fruit)
 
-if(len(result_banana) > 0):
-	cv2.imshow('morangao', result_banana)
-	cv2.imwrite('banana_new.jpg',result_banana)
+if(len(draw_banana(banana)) > 0):
+	result_banana = draw_banana(banana)
+	largura = banana.shape[1]
+	altura = banana.shape[0]
+	texto = '{}'.format('Banana')
+	fonte = cv2.FONT_HERSHEY_DUPLEX
+	escala = 2
+	grossura = 3
+	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
+	cv2.putText(result_banana, texto, (30, 50), fonte, escala,
+				(0, 0, 0), grossura)
+	cv2.imshow('reconhecida', result_banana)
+	#cv2.imwrite('banana_new.jpg',result_banana)
 #output image
 
 cv2.imwrite('apple_new.jpg',result_apple)
