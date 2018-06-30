@@ -85,15 +85,24 @@ def draw_apple(image):
 
 	big_contour,mask_fruit=find_biggest_contour(mask_cleaned)
 
+	if (len(big_contour) <= 0):
+		return []
+
+	#desenha uma borra na regiao da fruta
 	overlay=overlay_mask(mask_cleaned,image)
 
-	circled=circle_contour(overlay,big_contour)
+	#circula a fruta
+	circled=circle_contour(image,big_contour)
 
-	show(circled)
+	#show(circled)
 
 	bgr=cv2.cvtColor(circled,cv2.COLOR_RGB2BGR)
 
-	return bgr
+	print(len(big_contour))
+	if (len(big_contour) < 200):
+		return []
+	else:
+		return bgr
 
 def draw_banana(image):
 
@@ -132,10 +141,9 @@ def draw_banana(image):
 	if(len(big_contour) <= 0):
 		return []
 
-	cv2.imshow("das", mask_fruit)
 	overlay=overlay_mask(mask_cleaned,image)
 
-	circled=circle_contour(overlay,big_contour)
+	circled=circle_contour(image,big_contour)
 
 	show(circled)
 
@@ -163,13 +171,13 @@ def draw_strawberry(image):
 
 	image_blur_hsv=cv2.cvtColor(image_blur,cv2.COLOR_RGB2HSV)
 
-	min_color=np.array([0,100,80])
-	max_color=np.array([10,256,256])
+	min_color=np.array([20,200,80])
+	max_color=np.array([30,256,150])
 
 	mask1=cv2.inRange(image_blur_hsv,min_color,max_color)
 
-	min_color2=np.array([170,100,80])
-	max_color2=np.array([180,256,256])
+	min_color2=np.array([40,200,80])
+	max_color2=np.array([50,256,256])
 
 	mask2=cv2.inRange(image_blur_hsv,min_color2,max_color2)
 
@@ -182,6 +190,8 @@ def draw_strawberry(image):
 
 	big_contour,mask_fruit=find_biggest_contour(mask_cleaned)
 
+	if (len(big_contour) <= 0):
+		return []
 	overlay=overlay_mask(mask_cleaned,image)
 
 	circled=circle_contour(overlay,big_contour)
@@ -190,7 +200,10 @@ def draw_strawberry(image):
 
 	bgr=cv2.cvtColor(circled,cv2.COLOR_RGB2BGR)
 
-	return bgr
+	if (len(big_contour) < 200):
+		return []
+	else:
+		return bgr
 
 
 
@@ -198,7 +211,9 @@ def draw_strawberry(image):
 
 #input image
 
-
+imagem = cv2.imread('frutas/banana/banana1.jpg')
+#imagem = cv2.imread('frutas/apple/maca1.jpg')
+#imagem = cv2.imread('frutas/laranja/laranja.jpg')
 apple=cv2.imread('apple.jpg')
 banana=cv2.imread('frutas/banana/bananas.jpg')
 strawberry=cv2.imread('strawberry.jpg')
@@ -206,27 +221,54 @@ fruit=cv2.imread('fruit.jpg')
 #process image
 result_apple=draw_apple(apple)
 #result_banana=draw_banana(apple)
-result_strawberry=draw_strawberry(strawberry)
+#result_strawberry=draw_strawberry(strawberry)
 #result_fruit=draw_banana(fruit)
 
-if(len(draw_banana(banana)) > 0):
-	result_banana = draw_banana(banana)
-	largura = banana.shape[1]
-	altura = banana.shape[0]
+if(len(draw_banana(imagem)) > 0):
+	result_banana = draw_banana(imagem)
+	largura = imagem.shape[1]
+	altura = imagem.shape[0]
 	texto = '{}'.format('Banana')
-	fonte = cv2.FONT_HERSHEY_DUPLEX
+	fonte = cv2.FONT_HERSHEY_COMPLEX
 	escala = 2
 	grossura = 3
 	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
 	cv2.putText(result_banana, texto, (30, 50), fonte, escala,
 				(0, 0, 0), grossura)
-	cv2.imshow('reconhecida', result_banana)
+	cv2.imshow('Banana', result_banana)
 	#cv2.imwrite('banana_new.jpg',result_banana)
+elif(len(draw_apple(imagem)) > 0):
+	resulta_apple = draw_apple(imagem)
+	largura = imagem.shape[1]
+	altura = imagem.shape[0]
+	texto = '{}'.format('Apple')
+	fonte = cv2.FONT_HERSHEY_DUPLEX
+	escala = 2
+	grossura = 3
+	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
+	cv2.putText(result_apple, texto, (30, 50), fonte, escala,
+				(0, 0, 0), grossura)
+	cv2.imshow('Maca', result_apple)
+elif(len(draw_strawberry(imagem)) > 0):
+	resulta_laranja = draw_strawberry(imagem)
+	largura = imagem.shape[1]
+	altura = imagem.shape[0]
+	texto = '{}'.format('Laranja')
+	fonte = cv2.FONT_HERSHEY_DUPLEX
+	escala = 2
+	grossura = 3
+	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
+	cv2.putText(resulta_laranja, texto, (30, 50), fonte, escala,
+				(0, 0, 0), grossura)
+	cv2.imshow('Laranja', resulta_laranja)
+else:
+	img = cv2.imread('yo2.jpg')
+	cv2.imshow('sem fruta', img)
 #output image
 
 cv2.imwrite('apple_new.jpg',result_apple)
 
-cv2.imwrite('strawberry_new.jpg',result_strawberry)
+#cv2.imwrite('strawberry_new.jpg',result_strawberry)
 #cv2.imwrite('fruit_new.jpg',result_fruit)
 
 cv2.waitKey(0)
