@@ -86,7 +86,7 @@ def draw_apple(image):
 	big_contour,mask_fruit=find_biggest_contour(mask_cleaned)
 
 	if (len(big_contour) <= 0):
-		return []
+		return 0, []
 
 	#desenha uma borra na regiao da fruta
 	overlay=overlay_mask(mask_cleaned,image)
@@ -98,11 +98,11 @@ def draw_apple(image):
 
 	bgr=cv2.cvtColor(circled,cv2.COLOR_RGB2BGR)
 
-	print(len(big_contour))
-	if (len(big_contour) < 200):
-		return []
-	else:
-		return bgr
+	print('tam maça ',len(big_contour))
+	#if (len(big_contour) < 500):
+	#	return []
+	#else:
+	return len(big_contour), bgr
 
 def draw_banana(image):
 
@@ -120,13 +120,13 @@ def draw_banana(image):
 
 	image_blur_hsv=cv2.cvtColor(image_blur,cv2.COLOR_RGB2HSV)
 
-	min_color=np.array([20,50,50])
-	max_color=np.array([30,256,256])
+	min_color = np.array([20, 50, 50])
+	max_color = np.array([30, 256, 256])
 
 	mask1=cv2.inRange(image_blur_hsv,min_color,max_color)
 
-	min_color2=np.array([60,50,50])
-	max_color2=np.array([70,256,256])
+	min_color2 = np.array([60, 50, 50])
+	max_color2 = np.array([70, 256, 256])
 
 	mask2=cv2.inRange(image_blur_hsv,min_color2,max_color2)
 
@@ -139,7 +139,7 @@ def draw_banana(image):
 	big_contour,mask_fruit=find_biggest_contour(mask_cleaned)
 
 	if(len(big_contour) <= 0):
-		return []
+		return 0, []
 
 	overlay=overlay_mask(mask_cleaned,image)
 
@@ -148,11 +148,11 @@ def draw_banana(image):
 	show(circled)
 
 	bgr=cv2.cvtColor(circled,cv2.COLOR_RGB2BGR)
-	print(len(big_contour))
-	if(len(big_contour) < 200):
-		return []
-	else:
-		return bgr
+	print('tam banana ',len(big_contour))
+	#if(len(big_contour) < 600):
+	#	return []
+	#else:
+	return len(big_contour), bgr
 
 
 def draw_strawberry(image):
@@ -171,13 +171,13 @@ def draw_strawberry(image):
 
 	image_blur_hsv=cv2.cvtColor(image_blur,cv2.COLOR_RGB2HSV)
 
-	min_color=np.array([20,200,80])
-	max_color=np.array([30,256,150])
+	min_color=np.array([20,100,150])
+	max_color=np.array([80,160,256])
 
 	mask1=cv2.inRange(image_blur_hsv,min_color,max_color)
 
-	min_color2=np.array([40,200,80])
-	max_color2=np.array([50,256,256])
+	min_color2=np.array([80,180,100])
+	max_color2=np.array([256,256,256])
 
 	mask2=cv2.inRange(image_blur_hsv,min_color2,max_color2)
 
@@ -191,19 +191,20 @@ def draw_strawberry(image):
 	big_contour,mask_fruit=find_biggest_contour(mask_cleaned)
 
 	if (len(big_contour) <= 0):
-		return []
+		return 0, []
 	overlay=overlay_mask(mask_cleaned,image)
 
-	circled=circle_contour(overlay,big_contour)
+	circled=circle_contour(image,big_contour)
 
 	show(circled)
 
 	bgr=cv2.cvtColor(circled,cv2.COLOR_RGB2BGR)
 
-	if (len(big_contour) < 200):
-		return []
-	else:
-		return bgr
+	print('tam laranja ',len(big_contour))
+	#if (len(big_contour) < 200):
+	#	return []
+	#else:
+	return len(big_contour), bgr
 
 
 
@@ -211,21 +212,31 @@ def draw_strawberry(image):
 
 #input image
 
-imagem = cv2.imread('frutas/banana/banana1.jpg')
-#imagem = cv2.imread('frutas/apple/maca1.jpg')
-#imagem = cv2.imread('frutas/laranja/laranja.jpg')
-apple=cv2.imread('apple.jpg')
-banana=cv2.imread('frutas/banana/bananas.jpg')
-strawberry=cv2.imread('strawberry.jpg')
-fruit=cv2.imread('fruit.jpg')
+#imagem = cv2.imread('frutas/banana/banana1.jpg')
+#imagem = cv2.imread('frutas/apple/maca3.jpg')
+imagem = cv2.imread('frutas/laranja/laranja11.jpg')
+
+#apple=cv2.imread('apple.jpg')
+#banana=cv2.imread('frutas/banana/bananas.jpg')
+#strawberry=cv2.imread('strawberry.jpg')
+#fruit=cv2.imread('fruit.jpg')
+
 #process image
-result_apple=draw_apple(apple)
+#result_apple=draw_apple(apple)
 #result_banana=draw_banana(apple)
 #result_strawberry=draw_strawberry(strawberry)
 #result_fruit=draw_banana(fruit)
 
-if(len(draw_banana(imagem)) > 0):
-	result_banana = draw_banana(imagem)
+tam1, result1 = draw_banana(imagem)
+tam2, result2 = draw_apple(imagem)
+tam3, result3 = draw_strawberry(imagem)
+
+print('result1: ',tam1)
+print('result2: ',tam2)
+print('result3: ',tam3)
+
+if(tam1 > tam2 and tam1 > tam3):
+	_, result_banana = draw_banana(imagem)
 	largura = imagem.shape[1]
 	altura = imagem.shape[0]
 	texto = '{}'.format('Banana')
@@ -237,8 +248,8 @@ if(len(draw_banana(imagem)) > 0):
 				(0, 0, 0), grossura)
 	cv2.imshow('Banana', result_banana)
 	#cv2.imwrite('banana_new.jpg',result_banana)
-elif(len(draw_apple(imagem)) > 0):
-	resulta_apple = draw_apple(imagem)
+elif(tam2 > tam1 and tam2 > tam3):
+	result_apple = draw_apple(imagem)
 	largura = imagem.shape[1]
 	altura = imagem.shape[0]
 	texto = '{}'.format('Apple')
@@ -249,8 +260,8 @@ elif(len(draw_apple(imagem)) > 0):
 	cv2.putText(result_apple, texto, (30, 50), fonte, escala,
 				(0, 0, 0), grossura)
 	cv2.imshow('Maca', result_apple)
-elif(len(draw_strawberry(imagem)) > 0):
-	resulta_laranja = draw_strawberry(imagem)
+elif(tam3 > tam1 and tam3 > tam2):
+	resulta_laranja = result3#draw_strawberry(imagem)
 	largura = imagem.shape[1]
 	altura = imagem.shape[0]
 	texto = '{}'.format('Laranja')
@@ -258,15 +269,14 @@ elif(len(draw_strawberry(imagem)) > 0):
 	escala = 2
 	grossura = 3
 	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
-	cv2.putText(resulta_laranja, texto, (30, 50), fonte, escala,
-				(0, 0, 0), grossura)
+	cv2.putText(resulta_laranja, texto, (30, 50), fonte, escala, (0, 0, 0), grossura)
 	cv2.imshow('Laranja', resulta_laranja)
 else:
 	img = cv2.imread('yo2.jpg')
 	cv2.imshow('sem fruta', img)
 #output image
 
-cv2.imwrite('apple_new.jpg',result_apple)
+#cv2.imwrite('apple_new.jpg',result_apple)
 
 #cv2.imwrite('strawberry_new.jpg',result_strawberry)
 #cv2.imwrite('fruit_new.jpg',result_fruit)
