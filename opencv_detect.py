@@ -84,6 +84,7 @@ def maca(image):
 	mask_closed=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernel)
 	mask_cleaned=cv2.morphologyEx(mask_closed,cv2.MORPH_OPEN,kernel)
 
+	cv2.imshow('cont', mask_cleaned)
 	#encontrar o maior contorno
 	big_contour,mask_fruit=maior_contorno(mask_cleaned)
 
@@ -243,16 +244,7 @@ else:
 	print('entrei')
 	imagem = cv2.imread(sys.argv[1])
 
-#apple=cv2.imread('apple.jpg')
-#banana=cv2.imread('frutas/banana/bananas.jpg')
-#strawberry=cv2.imread('strawberry.jpg')
-#fruit=cv2.imread('fruit.jpg')
 
-#process image
-#result_apple=draw_apple(apple)
-#result_banana=draw_banana(apple)
-#result_strawberry=draw_strawberry(strawberry)
-#result_fruit=draw_banana(fruit)
 
 tam1, result1 = banana(imagem)
 tam2, result2 = maca(imagem)
@@ -301,11 +293,6 @@ elif(tam3 > tam1 and tam3 > tam2):
 else:
 	img = cv2.imread('yo2.jpg')
 	cv2.imshow('sem fruta', img)
-#output image
 
-#cv2.imwrite('apple_new.jpg',result_apple)
-
-#cv2.imwrite('strawberry_new.jpg',result_strawberry)
-#cv2.imwrite('fruit_new.jpg',result_fruit)
 
 cv2.waitKey(0)
