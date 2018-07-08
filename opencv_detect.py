@@ -4,6 +4,7 @@ import sys
 import numpy as np
 #import numpy for scientific calculations
 from matplotlib import pyplot as plt
+import time
 
 #
 #Guilherme Bacca & Peterson Boni
@@ -84,7 +85,7 @@ def maca(image):
 	mask_closed=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernel)
 	mask_cleaned=cv2.morphologyEx(mask_closed,cv2.MORPH_OPEN,kernel)
 
-	cv2.imshow('cont', mask_cleaned)
+	#cv2.imshow('cont', mask_cleaned)
 	#encontrar o maior contorno
 	big_contour,mask_fruit=maior_contorno(mask_cleaned)
 
@@ -238,61 +239,67 @@ def laranja(image):
 #imagem = cv2.imread('frutas/apple/maca6.jpg')
 #imagem = cv2.imread('frutas/laranja/laranja10.jpg')
 
-if(len(sys.argv) < 2):
-	imagem = cv2.imread('frutas/frutas/fruta7.jpg')
+
+
+
+'''if(len(sys.argv) < 2):
+	imagem = cv2.imread('frutas/frutas/fruta1.jpg')
 else:
 	print('entrei')
-	imagem = cv2.imread(sys.argv[1])
+	imagem = cv2.imread(sys.argv[1])'''
 
 
+imagem = []
+for contador in range(1, 23):
+	imagem = cv2.imread('frutas/frutas/fruta'+str(contador)+'.jpg')
+	tam1, result1 = banana(imagem)
+	tam2, result2 = maca(imagem)
+	tam3, result3 = laranja(imagem)
 
-tam1, result1 = banana(imagem)
-tam2, result2 = maca(imagem)
-tam3, result3 = laranja(imagem)
+	print('result1: ',tam1)
+	print('result2: ',tam2)
+	print('result3: ',tam3)
 
-print('result1: ',tam1)
-print('result2: ',tam2)
-print('result3: ',tam3)
+	if(tam1 > tam2 and tam1 > tam3):
+		result_banana = result1
+		largura = imagem.shape[1]
+		altura = imagem.shape[0]
+		texto = '{}'.format('Banana')
+		fonte = cv2.FONT_HERSHEY_COMPLEX
+		escala = 2
+		grossura = 3
+		tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
+		cv2.putText(result_banana, texto, (30, 50), fonte, escala,
+					(0, 0, 0), grossura)
+		cv2.imshow('Fruta', result_banana)
+		#cv2.imwrite('banana_new.jpg',result_banana)
+	elif(tam2 > tam1 and tam2 > tam3):
+		result_apple = result2
+		largura = imagem.shape[1]
+		altura = imagem.shape[0]
+		texto = '{}'.format('Apple')
+		fonte = cv2.FONT_HERSHEY_DUPLEX
+		escala = 2
+		grossura = 3
+		tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
+		cv2.putText(result_apple, texto, (30, 50), fonte, escala,
+					(0, 0, 0), grossura)
+		cv2.imshow('Fruta', result_apple)
+	elif(tam3 > tam1 and tam3 > tam2):
+		resulta_laranja = result3#draw_strawberry(imagem)
+		largura = imagem.shape[1]
+		altura = imagem.shape[0]
+		texto = '{}'.format('Laranja')
+		fonte = cv2.FONT_HERSHEY_DUPLEX
+		escala = 2
+		grossura = 3
+		tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
+		cv2.putText(resulta_laranja, texto, (30, 50), fonte, escala, (0, 0, 0), grossura)
+		cv2.imshow('Fruta', resulta_laranja)
+	else:
+		img = cv2.imread('yo2.jpg')
+		cv2.imshow('sem fruta', img)
 
-if(tam1 > tam2 and tam1 > tam3):
-	result_banana = result1
-	largura = imagem.shape[1]
-	altura = imagem.shape[0]
-	texto = '{}'.format('Banana')
-	fonte = cv2.FONT_HERSHEY_COMPLEX
-	escala = 2
-	grossura = 3
-	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
-	cv2.putText(result_banana, texto, (30, 50), fonte, escala,
-				(0, 0, 0), grossura)
-	cv2.imshow('Banana', result_banana)
-	#cv2.imwrite('banana_new.jpg',result_banana)
-elif(tam2 > tam1 and tam2 > tam3):
-	result_apple = result2
-	largura = imagem.shape[1]
-	altura = imagem.shape[0]
-	texto = '{}'.format('Apple')
-	fonte = cv2.FONT_HERSHEY_DUPLEX
-	escala = 2
-	grossura = 3
-	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
-	cv2.putText(result_apple, texto, (30, 50), fonte, escala,
-				(0, 0, 0), grossura)
-	cv2.imshow('Maca', result_apple)
-elif(tam3 > tam1 and tam3 > tam2):
-	resulta_laranja = result3#draw_strawberry(imagem)
-	largura = imagem.shape[1]
-	altura = imagem.shape[0]
-	texto = '{}'.format('Laranja')
-	fonte = cv2.FONT_HERSHEY_DUPLEX
-	escala = 2
-	grossura = 3
-	tamanho, _ = cv2.getTextSize(texto, fonte, escala, grossura)
-	cv2.putText(resulta_laranja, texto, (30, 50), fonte, escala, (0, 0, 0), grossura)
-	cv2.imshow('Laranja', resulta_laranja)
-else:
-	img = cv2.imread('yo2.jpg')
-	cv2.imshow('sem fruta', img)
-
+	cv2.waitKey(0)
 
 cv2.waitKey(0)
